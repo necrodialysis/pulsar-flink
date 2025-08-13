@@ -29,7 +29,7 @@ under the License.
 		<version>1.14.3.4</version>
 	</parent>
 
-	<artifactId>pulsar-flink-sql-connector_${scala.binary.version}</artifactId>
+	<artifactId>pulsar-flink-sql-connector</artifactId>
 	<name>StreamNative :: Pulsar Flink Connector :: SQL/Table API</name>
 	<description>Elastic data processing with Apache Pulsar and Apache Flink</description>
 
@@ -38,7 +38,7 @@ under the License.
 	<dependencies>
 		<dependency>
 			<groupId>io.streamnative.connectors</groupId>
-			<artifactId>pulsar-flink-connector_${scala.binary.version}</artifactId>
+			<artifactId>pulsar-flink-connector</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

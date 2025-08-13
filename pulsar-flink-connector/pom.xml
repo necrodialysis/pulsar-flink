@@ -29,7 +29,7 @@ under the License.
 		<version>1.14.3.4</version>
 	</parent>
 
-	<artifactId>pulsar-flink-connector_${scala.binary.version}</artifactId>
+	<artifactId>pulsar-flink-connector</artifactId>
 	<name>StreamNative :: Pulsar Flink Connector :: Stream</name>
 	<description>Elastic data processing with Apache Pulsar and Apache Flink</description>
 
@@ -148,13 +148,6 @@ under the License.
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-table-planner_${scala.binary.version}</artifactId>
-			<version>${flink.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
 		<!-- Pulsar table descriptor testing -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
@@ -168,13 +161,6 @@ under the License.
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-sql-client</artifactId>
 			<version>${flink.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-table-planner_${scala.binary.version}</artifactId>
-			<version>${flink.version}</version>
-			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
