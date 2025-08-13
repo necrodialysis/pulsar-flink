@@ -119,7 +119,7 @@ under the License.
 		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
-		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 		<maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
 		<maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
@@ -252,7 +252,11 @@ under the License.
 							<gpgArguments>
 								<arg>--pinentry-mode</arg>
 								<arg>loopback</arg>
+								<arg>--batch</arg>
+								<arg>--no-tty</arg>
 							</gpgArguments>
+							<!-- either hard-code, property or env -->
+							<passphrase>${gpg_password}</passphrase>
 						</configuration>
 					</plugin>
 					<plugin>
