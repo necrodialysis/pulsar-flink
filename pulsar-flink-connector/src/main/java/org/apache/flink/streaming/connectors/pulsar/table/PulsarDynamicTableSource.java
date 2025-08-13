@@ -18,6 +18,8 @@
 
 package org.apache.flink.streaming.connectors.pulsar.table;
 
+import org.apache.flink.streaming.connectors.pulsar.util.DataTypeUtils;
+
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -27,10 +29,11 @@ import org.apache.flink.streaming.connectors.pulsar.internal.PulsarClientUtils;
 import org.apache.flink.streaming.connectors.pulsar.serialization.PulsarDeserializationSchema;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.connector.ChangelogMode;
+import org.apache.flink.table.connector.Projection;
 import org.apache.flink.table.connector.format.DecodingFormat;
 import org.apache.flink.table.connector.source.DynamicTableSource;
 import org.apache.flink.table.connector.source.ScanTableSource;
-import org.apache.flink.table.connector.source.SourceFunctionProvider;
+import org.apache.flink.legacy.table.connector.source.SourceFunctionProvider;
 import org.apache.flink.table.connector.source.abilities.SupportsReadingMetadata;
 import org.apache.flink.table.connector.source.abilities.SupportsWatermarkPushDown;
 import org.apache.flink.table.data.GenericMapData;
@@ -38,7 +41,6 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.types.DataType;
-import org.apache.flink.table.types.utils.DataTypeUtils;
 import org.apache.flink.util.Preconditions;
 
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +105,9 @@ public class PulsarDynamicTableSource
     protected final int[] valueProjection;
 
     /** Prefix that needs to be removed from fields when constructing the physical data type. */
-    @Nullable protected final String keyPrefix;
+    @Nullable
+    protected final String keyPrefix;
+
     // --------------------------------------------------------------------------------------------
     // Pulsar-specific attributes
     // --------------------------------------------------------------------------------------------
@@ -432,7 +436,7 @@ public class PulsarDynamicTableSource
             return null;
         }
         DataType physicalFormatDataType =
-                DataTypeUtils.projectRow(this.physicalDataType, projection);
+                Projection.of(projection).project(this.physicalDataType);
         if (prefix != null) {
             physicalFormatDataType = DataTypeUtils.stripRowPrefix(physicalFormatDataType, prefix);
         }

@@ -19,6 +19,8 @@
 package org.apache.flink.streaming.connectors.pulsar.internal;
 
 import org.apache.flink.api.common.ExecutionConfig;
+import org.apache.flink.api.common.functions.RuntimeContext;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.common.typeutils.base.StringSerializer;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -45,13 +47,13 @@ public class PulsarSourceStateSerializer
 
     private static final int CURRENT_VERSION = 4;
 
-    private final ExecutionConfig executionConfig;
+    private final RuntimeContext runtimeContext;
 
     private Map<Integer, SerializableFunction<byte[], Tuple2<TopicSubscription, MessageId>>>
             oldStateSerializer;
 
-    public PulsarSourceStateSerializer(ExecutionConfig executionConfig) {
-        this.executionConfig = executionConfig;
+    public PulsarSourceStateSerializer(RuntimeContext runtimeContext) {
+        this.runtimeContext = runtimeContext;
         this.oldStateSerializer = new LinkedHashMap<>();
         oldStateSerializer.put(
                 0,
@@ -145,9 +147,13 @@ public class PulsarSourceStateSerializer
 
     public TupleSerializer<Tuple2<String, MessageId>> getV0Serializer() {
         TypeSerializer<?>[] fieldSerializers =
-                new TypeSerializer<?>[] {
-                    StringSerializer.INSTANCE,
-                    new KryoSerializer<>(MessageId.class, executionConfig)
+                new TypeSerializer<?>[]{
+                        StringSerializer.INSTANCE,
+                        runtimeContext.createSerializer(
+                                TypeInformation.of(
+                                        MessageId.class
+                                )
+                        )
                 };
         @SuppressWarnings("unchecked")
         Class<Tuple2<String, MessageId>> tupleClass =
@@ -157,9 +163,17 @@ public class PulsarSourceStateSerializer
 
     public TupleSerializer<Tuple2<TopicRange, MessageId>> getV1Serializer() {
         TypeSerializer<?>[] fieldSerializers =
-                new TypeSerializer<?>[] {
-                    new KryoSerializer<>(TopicRange.class, executionConfig),
-                    new KryoSerializer<>(MessageId.class, executionConfig)
+                new TypeSerializer<?>[]{
+                        runtimeContext.createSerializer(
+                                TypeInformation.of(
+                                        TopicRange.class
+                                )
+                        ),
+                        runtimeContext.createSerializer(
+                                TypeInformation.of(
+                                        MessageId.class
+                                )
+                        )
                 };
         @SuppressWarnings("unchecked")
         Class<Tuple2<TopicRange, MessageId>> tupleClass =
@@ -169,10 +183,18 @@ public class PulsarSourceStateSerializer
 
     public TupleSerializer<Tuple3<TopicRange, MessageId, String>> getV2Serializer() {
         TypeSerializer<?>[] fieldSerializers =
-                new TypeSerializer<?>[] {
-                    new KryoSerializer<>(TopicRange.class, executionConfig),
-                    new KryoSerializer<>(MessageId.class, executionConfig),
-                    new StringSerializer()
+                new TypeSerializer<?>[]{
+                        runtimeContext.createSerializer(
+                                TypeInformation.of(
+                                        TopicRange.class
+                                )
+                        ),
+                        runtimeContext.createSerializer(
+                                TypeInformation.of(
+                                        MessageId.class
+                                )
+                        ),
+                        new StringSerializer()
                 };
         @SuppressWarnings("unchecked")
         Class<Tuple3<TopicRange, MessageId, String>> tupleClass =

@@ -22,7 +22,7 @@ import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
+import org.apache.flink.streaming.api.functions.sink.legacy.SinkFunction;
 import org.apache.flink.streaming.connectors.pulsar.serialization.PulsarSerializationSchemaWrapper;
 import org.apache.flink.streaming.connectors.pulsar.table.PulsarSinkSemantic;
 import org.apache.flink.streaming.connectors.pulsar.testutils.FailingIdentityMapper;

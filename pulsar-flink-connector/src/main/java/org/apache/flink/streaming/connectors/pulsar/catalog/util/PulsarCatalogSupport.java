@@ -25,7 +25,7 @@ import org.apache.flink.streaming.connectors.pulsar.internal.SchemaTranslator;
 import org.apache.flink.streaming.connectors.pulsar.table.PulsarDynamicTableFactory;
 import org.apache.flink.streaming.connectors.pulsar.table.PulsarTableOptions;
 import org.apache.flink.table.api.Schema;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.legacy.api.TableSchema;
 import org.apache.flink.table.catalog.CatalogTable;
 import org.apache.flink.table.catalog.ObjectPath;
 import org.apache.flink.table.catalog.ResolvedCatalogTable;
@@ -90,8 +90,9 @@ public class PulsarCatalogSupport {
      * namespace
      *
      * @param name the database name
+     *
      * @return false if the name contains "/", which indicate it's a pulsar tenant/namespace mapped
-     *     database
+     *         database
      */
     private boolean isGenericDatabase(String name) {
         return !name.contains("/");
@@ -166,11 +167,12 @@ public class PulsarCatalogSupport {
                         TableSchemaHelper.generateTableProperties(metadataSchema);
                 CatalogTable table = CatalogTable.fromProperties(tableProperties);
                 table.getOptions().put(PulsarOptions.GENERIC, Boolean.TRUE.toString());
-                return CatalogTable.of(
-                        table.getUnresolvedSchema(),
-                        table.getComment(),
-                        table.getPartitionKeys(),
-                        enrichTableOptions(table.getOptions()));
+                return CatalogTable.newBuilder()
+                        .schema(table.getUnresolvedSchema())
+                        .comment(table.getComment())
+                        .partitionKeys(table.getPartitionKeys())
+                        .options(enrichTableOptions(table.getOptions()))
+                        .build();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new CatalogException(
@@ -228,7 +230,12 @@ public class PulsarCatalogSupport {
         final TableSchema tableSchema = schemaTranslator.pulsarSchemaToTableSchema(pulsarSchema);
         final Schema schema =
                 Schema.newBuilder().fromRowDataType(tableSchema.toRowDataType()).build();
-        return CatalogTable.of(schema, "", Collections.emptyList(), enrichTableOptions(null));
+        return CatalogTable.newBuilder()
+                .schema(schema)
+                .comment("")
+                .partitionKeys(Collections.emptyList())
+                .options(enrichTableOptions(null))
+                .build();
     }
 
     // enrich table properties with proper catalog configs

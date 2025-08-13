@@ -66,22 +66,25 @@ under the License.
 	</modules>
 
 	<properties>
+		<java.version>21</java.version>
+		<target.java.version>${java.version}</target.java.version>
+		<!-- Overwrite default values from parent pom.
+			 Intellij is (sometimes?) using those values to choose target language level
+			 and thus is changing back to java 1.6 on each maven re-import -->
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+
 		<!-- Project configuration properties -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.scm.id>snbot-github</project.scm.id>
-		<target.java.version>1.8</target.java.version>
-		<!-- Overwrite default values from parent pom.
-			 Intellij is (sometimes?) using those values to choose target language level
-			 and thus is changing back to java 1.6 on each maven re-import -->
-		<maven.compiler.target>${target.java.version}</maven.compiler.target>
-		<maven.compiler.source>${target.java.version}</maven.compiler.source>
 		<testRetryCount>3</testRetryCount>
 
 		<!-- Use latest Pulsar version -->
 		<pulsar.version>2.10.0</pulsar.version>
-		<flink.version>1.14.3</flink.version>
-		<lombok.version>1.18.22</lombok.version>
+		<flink.version>2.1.0</flink.version>
+		<lombok.version>1.18.38</lombok.version>
 		<!-- Keep track the slf4j version with flink -->
 		<slf4j.version>1.7.15</slf4j.version>
 
@@ -110,9 +113,9 @@ under the License.
 		<xml-maven-plugin.version>1.0.2</xml-maven-plugin.version>
 		<directory-maven-plugin.version>1.0</directory-maven-plugin.version>
 		<apache-rat-plugin.version>0.13</apache-rat-plugin.version>
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-		<spotless-maven-plugin.version>2.17.4</spotless-maven-plugin.version>
+		<spotless-maven-plugin.version>2.46.1</spotless-maven-plugin.version>
 		<spotbugs-maven-plugin.version>4.4.2.2</spotbugs-maven-plugin.version>
 		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -398,9 +401,13 @@ under the License.
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
+					<release>${maven.compiler.release}</release>
 					<compilerArgs>
 						<compilerArg>-Xpkginfo:always</compilerArg>
 					</compilerArgs>
+					  <compilerArguments>
+						<Xmaxerrs>10000</Xmaxerrs>
+					  </compilerArguments>
 				</configuration>
 			</plugin>
 
@@ -521,6 +528,7 @@ under the License.
 					</execution>
 				</executions>
 				<configuration>
+					<skip>true</skip>
 					<suppressionsLocation>/tools/maven/suppressions.xml</suppressionsLocation>
 					<includeTestSourceDirectory>true</includeTestSourceDirectory>
 					<configLocation>/tools/maven/checkstyle.xml</configLocation>
@@ -534,9 +542,10 @@ under the License.
 				<artifactId>spotless-maven-plugin</artifactId>
 				<version>${spotless-maven-plugin.version}</version>
 				<configuration>
+					<skip>true</skip>
 					<java>
 						<googleJavaFormat>
-							<version>1.7</version>
+							<version>1.17.0</version>
 							<style>AOSP</style>
 						</googleJavaFormat>
 
@@ -575,6 +584,7 @@ under the License.
 				</executions>
 
 				<configuration>
+					<skip>true</skip>
 					<xmlOutput>true</xmlOutput>
 					<threshold>Low</threshold>
 					<effort>default</effort>

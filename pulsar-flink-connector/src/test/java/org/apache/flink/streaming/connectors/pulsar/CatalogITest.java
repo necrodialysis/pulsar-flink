@@ -29,7 +29,7 @@ import org.apache.flink.streaming.connectors.pulsar.testutils.SingletonStreamSin
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.legacy.api.TableSchema;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.GenericInMemoryCatalog;
@@ -37,8 +37,8 @@ import org.apache.flink.table.client.gateway.context.DefaultContext;
 import org.apache.flink.table.client.gateway.context.ExecutionContext;
 import org.apache.flink.table.client.gateway.context.SessionContext;
 
-import org.apache.flink.shaded.guava30.com.google.common.collect.Iterables;
-import org.apache.flink.shaded.guava30.com.google.common.collect.Sets;
+import org.apache.flink.shaded.guava33.com.google.common.collect.Iterables;
+import org.apache.flink.shaded.guava33.com.google.common.collect.Sets;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.pulsar.client.admin.PulsarAdmin;

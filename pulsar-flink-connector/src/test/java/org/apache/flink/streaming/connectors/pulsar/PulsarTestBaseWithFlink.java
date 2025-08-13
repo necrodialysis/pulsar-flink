@@ -27,8 +27,8 @@ import org.apache.flink.configuration.WebOptions;
 import org.apache.flink.metrics.jmx.JMXReporter;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.testutils.MiniClusterResourceConfiguration;
-import org.apache.flink.table.api.TableColumn;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.legacy.api.TableColumn;
+import org.apache.flink.table.legacy.api.TableSchema;
 import org.apache.flink.test.util.MiniClusterWithClientResource;
 
 import org.apache.pulsar.shade.org.apache.commons.lang3.StringUtils;

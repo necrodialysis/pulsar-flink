@@ -42,6 +42,7 @@ public class PulsarProtobufNativeRowDataDeserializationSchema
 
     // TODO maybe add nested ProtobufRowDataDeserializationSchema structured by Descriptor?
     private transient Descriptors.Descriptor descriptor;
+
     /** Runtime instance that performs the actual work. */
     private transient PulsarProtobufToRowDataConverters.ProtobufToRowDataConverter runtimeConverter;
 

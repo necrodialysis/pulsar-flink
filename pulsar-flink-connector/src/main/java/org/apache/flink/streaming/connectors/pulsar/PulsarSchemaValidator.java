@@ -19,7 +19,7 @@
 package org.apache.flink.streaming.connectors.pulsar;
 
 import org.apache.flink.table.descriptors.DescriptorProperties;
-import org.apache.flink.table.descriptors.SchemaValidator;
+import org.apache.flink.legacy.table.descriptors.SchemaValidator;
 
 /**
  * Pulsar validator that allows to only specify proctime or rowtime in schema. Other fields could be

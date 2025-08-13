@@ -20,7 +20,7 @@ package org.apache.flink.streaming.connectors.pulsar.internal;
 
 import org.apache.flink.api.common.eventtime.Watermark;
 import org.apache.flink.api.common.eventtime.WatermarkOutput;
-import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext;
+import org.apache.flink.streaming.api.functions.source.legacy.SourceFunction.SourceContext;
 
 /** A {@link WatermarkOutput} that forwards calls to a {@link SourceContext}. */
 public class SourceContextWatermarkOutputAdapter<T> implements WatermarkOutput {

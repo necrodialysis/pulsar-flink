@@ -21,6 +21,7 @@ package org.apache.flink.streaming.connectors.pulsar;
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.functions.OpenContext;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.serialization.RuntimeContextInitializationContextAdapters;
 import org.apache.flink.api.common.state.ListState;
@@ -35,13 +36,11 @@ import org.apache.flink.api.java.typeutils.ResultTypeQueryable;
 import org.apache.flink.api.java.typeutils.runtime.TupleSerializer;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.metrics.Counter;
-import org.apache.flink.runtime.state.CheckpointListener;
+import org.apache.flink.api.common.state.CheckpointListener;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
-import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;
-import org.apache.flink.streaming.api.functions.AssignerWithPunctuatedWatermarks;
-import org.apache.flink.streaming.api.functions.source.RichParallelSourceFunction;
+import org.apache.flink.streaming.api.functions.source.legacy.RichParallelSourceFunction;
 import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.streaming.connectors.pulsar.config.StartupMode;
 import org.apache.flink.streaming.connectors.pulsar.internal.CachedPulsarClient;
@@ -58,13 +57,13 @@ import org.apache.flink.streaming.connectors.pulsar.internal.TopicRange;
 import org.apache.flink.streaming.connectors.pulsar.internal.TopicSubscription;
 import org.apache.flink.streaming.connectors.pulsar.internal.TopicSubscriptionSerializer;
 import org.apache.flink.streaming.connectors.pulsar.serialization.PulsarDeserializationSchema;
-import org.apache.flink.streaming.runtime.operators.util.AssignerWithPeriodicWatermarksAdapter;
-import org.apache.flink.streaming.runtime.operators.util.AssignerWithPunctuatedWatermarksAdapter;
+import org.apache.flink.streaming.runtime.operators.util.WatermarkStrategyWithPeriodicWatermarks;
+import org.apache.flink.streaming.runtime.operators.util.WatermarkStrategyWithPunctuatedWatermarks;
 import org.apache.flink.streaming.runtime.tasks.ProcessingTimeService;
 import org.apache.flink.util.ExceptionUtils;
 import org.apache.flink.util.SerializedValue;
 
-import org.apache.flink.shaded.guava30.com.google.common.collect.Sets;
+import org.apache.flink.shaded.guava33.com.google.common.collect.Sets;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.MessageId;
@@ -295,7 +294,7 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
     // ------------------------------------------------------------------------
 
     /**
-     * Specifies an {@link AssignerWithPunctuatedWatermarks} to emit watermarks in a punctuated
+     * Specifies an {@link WatermarkStrategyWithPunctuatedWatermarks} to emit watermarks in a punctuated
      * manner. The watermark extractor will run per Pulsar partition, watermarks will be merged
      * across partitions in the same way as in the Flink runtime, when streams are merged.
      *
@@ -308,15 +307,15 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
      * <p>Running timestamp extractors / watermark generators directly inside the Pulsar source, per
      * Pulsar partition, allows users to let them exploit the per-partition characteristics.
      *
-     * <p>Note: One can use either an {@link AssignerWithPunctuatedWatermarks} or an {@link
-     * AssignerWithPeriodicWatermarks}, not both at the same time.
+     * <p>Note: One can use either an {@link WatermarkStrategyWithPunctuatedWatermarks} or an {@link
+     * WatermarkStrategyWithPeriodicWatermarks}, not both at the same time.
      *
      * @param assigner The timestamp assigner / watermark generator to use.
      * @return The reader object, to allow function chaining.
      */
     @Deprecated
     public FlinkPulsarSource<T> assignTimestampsAndWatermarks(
-            AssignerWithPunctuatedWatermarks<T> assigner) {
+            WatermarkStrategyWithPunctuatedWatermarks<T> assigner) {
         checkNotNull(assigner);
 
         if (this.watermarkStrategy != null) {
@@ -325,8 +324,7 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
 
         try {
             ClosureCleaner.clean(assigner, ExecutionConfig.ClosureCleanerLevel.RECURSIVE, true);
-            final WatermarkStrategy<T> wms =
-                    new AssignerWithPunctuatedWatermarksAdapter.Strategy<>(assigner);
+            final WatermarkStrategy<T> wms = assigner;
 
             return assignTimestampsAndWatermarks(wms);
         } catch (Exception e) {
@@ -335,7 +333,7 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
     }
 
     /**
-     * Specifies an {@link AssignerWithPunctuatedWatermarks} to emit watermarks in a punctuated
+     * Specifies an {@link WatermarkStrategyWithPunctuatedWatermarks} to emit watermarks in a punctuated
      * manner. The watermark extractor will run per Pulsar partition, watermarks will be merged
      * across partitions in the same way as in the Flink runtime, when streams are merged.
      *
@@ -348,15 +346,15 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
      * <p>Running timestamp extractors / watermark generators directly inside the Pulsar source, per
      * Pulsar partition, allows users to let them exploit the per-partition characteristics.
      *
-     * <p>Note: One can use either an {@link AssignerWithPunctuatedWatermarks} or an {@link
-     * AssignerWithPeriodicWatermarks}, not both at the same time.
+     * <p>Note: One can use either an {@link WatermarkStrategyWithPunctuatedWatermarks} or an {@link
+     * WatermarkStrategyWithPeriodicWatermarks}, not both at the same time.
      *
      * @param assigner The timestamp assigner / watermark generator to use.
      * @return The reader object, to allow function chaining.
      */
     @Deprecated
     public FlinkPulsarSource<T> assignTimestampsAndWatermarks(
-            AssignerWithPeriodicWatermarks<T> assigner) {
+            WatermarkStrategyWithPeriodicWatermarks<T> assigner) {
         checkNotNull(assigner);
 
         if (this.watermarkStrategy != null) {
@@ -365,8 +363,7 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
 
         try {
             ClosureCleaner.clean(assigner, ExecutionConfig.ClosureCleanerLevel.RECURSIVE, true);
-            final WatermarkStrategy<T> wms =
-                    new AssignerWithPeriodicWatermarksAdapter.Strategy<>(assigner);
+            final WatermarkStrategy<T> wms = assigner;
 
             return assignTimestampsAndWatermarks(wms);
         } catch (Exception e) {
@@ -474,14 +471,14 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
     // ------------------------------------------------------------------------
 
     @Override
-    public void open(Configuration parameters) throws Exception {
+    public void open(OpenContext openContext) throws Exception {
         if (this.deserializer != null) {
             this.deserializer.open(
                     RuntimeContextInitializationContextAdapters.deserializationAdapter(
                             getRuntimeContext(), metricGroup -> metricGroup.addGroup("user")));
         }
-        this.taskIndex = getRuntimeContext().getIndexOfThisSubtask();
-        this.numParallelTasks = getRuntimeContext().getNumberOfParallelSubtasks();
+        this.taskIndex = getRuntimeContext().getTaskInfo().getIndexOfThisSubtask();
+        this.numParallelTasks = getRuntimeContext().getTaskInfo().getNumberOfParallelSubtasks();
 
         this.metadataReader = createMetadataReader();
 
@@ -637,7 +634,9 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
                         ownedTopicStarts,
                         watermarkStrategy,
                         streamingRuntime.getProcessingTimeService(),
-                        streamingRuntime.getExecutionConfig().getAutoWatermarkInterval(),
+                        // TODO find a way to get this, should be:
+                        //   streamingRuntime.getExecutionConfig().getAutoWatermarkInterval(),
+                        200,
                         getRuntimeContext().getUserCodeClassLoader(),
                         streamingRuntime,
                         useMetrics,
@@ -866,7 +865,7 @@ public class FlinkPulsarSource<T> extends RichParallelSourceFunction<T>
             OperatorStateStore stateStore) throws Exception {
         log.info("restore old state version {}", oldStateVersion);
         PulsarSourceStateSerializer stateSerializer =
-                new PulsarSourceStateSerializer(getRuntimeContext().getExecutionConfig());
+                new PulsarSourceStateSerializer(getRuntimeContext());
         // Since stateStore.getUnionListState gets the data of a state point,
         // it can only be registered once and will fail to register again,
         // so it only allows the user to set a version number.

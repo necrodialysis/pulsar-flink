@@ -18,19 +18,25 @@
 
 package org.apache.flink.streaming.connectors.pulsar.internal;
 
+import org.apache.flink.api.common.eventtime.WatermarkGeneratorSupplier;
 import org.apache.flink.api.common.eventtime.WatermarkOutput;
 import org.apache.flink.api.common.eventtime.WatermarkOutputMultiplexer;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.operators.ProcessingTimeService.ProcessingTimeCallback;
 import org.apache.flink.metrics.Gauge;
 import org.apache.flink.metrics.MetricGroup;
-import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext;
+import org.apache.flink.streaming.api.functions.source.legacy.SourceFunction.SourceContext;
 import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.streaming.connectors.pulsar.serialization.PulsarDeserializationSchema;
-import org.apache.flink.streaming.runtime.tasks.ProcessingTimeCallback;
 import org.apache.flink.streaming.runtime.tasks.ProcessingTimeService;
 import org.apache.flink.util.SerializedValue;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.flink.util.clock.RelativeClock;
+
+import org.apache.flink.util.clock.SystemClock;
+
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.impl.conf.ClientConfigurationData;
 import org.apache.pulsar.shade.com.google.common.collect.ImmutableList;
@@ -548,7 +554,7 @@ public class PulsarFetcher<T> {
             readerT.setName(
                     String.format(
                             "Pulsar Reader for %s in task %s",
-                            state.getTopicRange(), runtimeContext.getTaskName()));
+                            state.getTopicRange(), runtimeContext.getTaskInfo().getTaskName()));
             readerT.setDaemon(true);
             readerT.start();
             log.info("Starting Thread {}", readerT.getName());
@@ -629,7 +635,18 @@ public class PulsarFetcher<T> {
                                         deserializedWatermarkStrategy.createTimestampAssigner(
                                                 () -> consumerMetricGroup),
                                         deserializedWatermarkStrategy.createWatermarkGenerator(
-                                                () -> consumerMetricGroup),
+                                                new WatermarkGeneratorSupplier.Context() {
+                                                    @Override
+                                                    public MetricGroup getMetricGroup() {
+                                                        return consumerMetricGroup;
+                                                    }
+
+                                                    @Override
+                                                    public RelativeClock getInputActivityClock() {
+                                                        return SystemClock.getInstance();
+                                                    }
+                                                }
+                                        ),
                                         immediateOutput,
                                         deferredOutput);
 
@@ -706,6 +723,7 @@ public class PulsarFetcher<T> {
             }
         }
     }
+
     // ------------------------------------------------------------------------
 
     /**

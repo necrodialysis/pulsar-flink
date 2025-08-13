@@ -18,7 +18,7 @@
 
 package org.apache.flink.streaming.connectors.pulsar.testutils;
 
-import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import org.apache.flink.streaming.api.functions.sink.legacy.RichSinkFunction;
 
 import java.util.ArrayList;
 import java.util.List;

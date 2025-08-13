@@ -17,25 +17,26 @@
  */
 
 package org.apache.flink.streaming.connectors.pulsar.table;
+import org.apache.flink.streaming.connectors.pulsar.util.DataTypeUtils;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
+import org.apache.flink.streaming.api.functions.sink.legacy.SinkFunction;
 import org.apache.flink.streaming.connectors.pulsar.FlinkPulsarSink;
 import org.apache.flink.streaming.connectors.pulsar.internal.PulsarClientUtils;
 import org.apache.flink.streaming.connectors.pulsar.internal.PulsarOptions;
 import org.apache.flink.streaming.connectors.pulsar.serialization.PulsarSerializationSchema;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.connector.ChangelogMode;
+import org.apache.flink.table.connector.Projection;
 import org.apache.flink.table.connector.format.EncodingFormat;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
-import org.apache.flink.table.connector.sink.SinkFunctionProvider;
+import org.apache.flink.table.connector.sink.legacy.SinkFunctionProvider;
 import org.apache.flink.table.connector.sink.abilities.SupportsWritingMetadata;
 import org.apache.flink.table.data.ArrayData;
 import org.apache.flink.table.data.MapData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.utils.DataTypeUtils;
 import org.apache.flink.util.Preconditions;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +71,7 @@ public class PulsarDynamicTableSink implements DynamicTableSink, SupportsWriting
 
     /** Data type to configure the formats. */
     protected final DataType physicalDataType;
+
     /** The pulsar topic to write to. */
     protected final String topic;
 
@@ -81,6 +83,7 @@ public class PulsarDynamicTableSink implements DynamicTableSink, SupportsWriting
 
     /** Optional format for encoding keys to Pulsar. */
     protected final @Nullable EncodingFormat<SerializationSchema<RowData>> keyEncodingFormat;
+
     /** Sink format for encoding records to pulsar. */
     protected final EncodingFormat<SerializationSchema<RowData>> valueEncodingFormat;
 
@@ -227,7 +230,7 @@ public class PulsarDynamicTableSink implements DynamicTableSink, SupportsWriting
                 hasMetadata,
                 metadataPositions,
                 upsertMode,
-                DataTypeUtils.projectRow(physicalDataType, valueProjection),
+                Projection.of(valueProjection).project(physicalDataType),
                 formatType,
                 delayMilliseconds);
     }
@@ -261,7 +264,7 @@ public class PulsarDynamicTableSink implements DynamicTableSink, SupportsWriting
             return null;
         }
         DataType physicalFormatDataType =
-                DataTypeUtils.projectRow(this.physicalDataType, projection);
+                Projection.of(projection).project(this.physicalDataType);
         if (prefix != null) {
             physicalFormatDataType = DataTypeUtils.stripRowPrefix(physicalFormatDataType, prefix);
         }

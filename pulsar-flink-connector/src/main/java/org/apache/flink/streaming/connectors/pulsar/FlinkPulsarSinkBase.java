@@ -20,6 +20,7 @@ package org.apache.flink.streaming.connectors.pulsar;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.annotation.VisibleForTesting;
+import org.apache.flink.api.common.functions.OpenContext;
 import org.apache.flink.api.common.serialization.RuntimeContextInitializationContextAdapters;
 import org.apache.flink.api.common.typeutils.SimpleTypeSerializerSnapshot;
 import org.apache.flink.api.common.typeutils.TypeSerializerSnapshot;
@@ -31,7 +32,7 @@ import org.apache.flink.core.memory.DataOutputView;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
-import org.apache.flink.streaming.api.functions.sink.TwoPhaseCommitSinkFunction;
+import org.apache.flink.streaming.api.functions.sink.legacy.TwoPhaseCommitSinkFunction;
 import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.streaming.connectors.pulsar.internal.CachedPulsarClient;
 import org.apache.flink.streaming.connectors.pulsar.internal.PulsarClientUtils;
@@ -41,7 +42,7 @@ import org.apache.flink.streaming.connectors.pulsar.table.PulsarSinkSemantic;
 import org.apache.flink.util.ExceptionUtils;
 import org.apache.flink.util.SerializableObject;
 
-import org.apache.flink.shaded.guava30.com.google.common.collect.Maps;
+import org.apache.flink.shaded.guava33.com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
@@ -253,7 +254,7 @@ abstract class FlinkPulsarSinkBase<T>
     }
 
     @Override
-    public void open(Configuration parameters) throws Exception {
+    public void open(OpenContext openContext) throws Exception {
         if (flushOnCheckpoint
                 && !((StreamingRuntimeContext) this.getRuntimeContext()).isCheckpointingEnabled()) {
             log.warn(

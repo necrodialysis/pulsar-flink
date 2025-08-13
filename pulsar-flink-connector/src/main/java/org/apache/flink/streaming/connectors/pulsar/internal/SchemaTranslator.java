@@ -18,7 +18,7 @@
 
 package org.apache.flink.streaming.connectors.pulsar.internal;
 
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.legacy.api.TableSchema;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.FieldsDataType;
 import org.apache.flink.table.types.logical.LogicalTypeRoot;

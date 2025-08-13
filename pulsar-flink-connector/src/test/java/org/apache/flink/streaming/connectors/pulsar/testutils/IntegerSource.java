@@ -18,9 +18,9 @@
 
 package org.apache.flink.streaming.connectors.pulsar.testutils;
 
-import org.apache.flink.runtime.state.CheckpointListener;
+import org.apache.flink.api.common.state.CheckpointListener;
 import org.apache.flink.streaming.api.checkpoint.ListCheckpointed;
-import org.apache.flink.streaming.api.functions.source.RichParallelSourceFunction;
+import org.apache.flink.streaming.api.functions.source.legacy.RichParallelSourceFunction;
 import org.apache.flink.util.SerializableObject;
 
 import lombok.extern.slf4j.Slf4j;

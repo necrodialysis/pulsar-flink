@@ -20,7 +20,7 @@ package org.apache.flink.streaming.connectors.pulsar.testutils;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.checkpoint.ListCheckpointed;
-import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import org.apache.flink.streaming.api.functions.sink.legacy.RichSinkFunction;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.test.util.SuccessException;
 

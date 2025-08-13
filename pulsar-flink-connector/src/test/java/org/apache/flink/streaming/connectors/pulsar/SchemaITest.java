@@ -27,7 +27,7 @@ import org.apache.flink.streaming.connectors.pulsar.testutils.TestUtils;
 import org.apache.flink.streaming.connectors.pulsar.util.RowDataUtil;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.legacy.api.TableSchema;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;

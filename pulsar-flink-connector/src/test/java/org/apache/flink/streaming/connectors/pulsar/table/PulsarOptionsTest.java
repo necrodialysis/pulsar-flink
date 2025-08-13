@@ -20,8 +20,8 @@ package org.apache.flink.streaming.connectors.pulsar.table;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.api.TableColumn;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.legacy.api.TableColumn;
+import org.apache.flink.table.legacy.api.TableSchema;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.types.DataType;
 

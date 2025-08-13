@@ -20,7 +20,7 @@ package org.apache.flink.streaming.connectors.pulsar.table.descriptors;
 
 import org.apache.flink.streaming.connectors.pulsar.config.StartupMode;
 import org.apache.flink.streaming.connectors.pulsar.internal.PulsarOptions;
-import org.apache.flink.table.descriptors.Descriptor;
+import org.apache.flink.table.legacy.descriptors.Descriptor;
 import org.apache.flink.table.descriptors.DescriptorProperties;
 import org.apache.flink.util.Preconditions;
 
