@@ -22,9 +22,9 @@ under the License.
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.streamnative.connectors</groupId>
+	<groupId>com.xenoamess.necrodialysis.pulsar-flink</groupId>
 	<artifactId>pulsar-flink-parent</artifactId>
-	<version>1.14.3.4</version>
+	<version>2.1.0.1-beta1</version>
 
 	<name>StreamNative :: Pulsar Flink Connector :: Root</name>
 	<packaging>pom</packaging>
@@ -301,7 +301,7 @@ under the License.
 						<configuration>
 							<property>rootDir</property>
 							<project>
-								<groupId>io.streamnative.connectors</groupId>
+								<groupId>com.xenoamess.necrodialysis.pulsar-flink</groupId>
 								<artifactId>pulsar-flink-parent</artifactId>
 							</project>
 						</configuration>
@@ -521,6 +521,7 @@ under the License.
 					</execution>
 				</executions>
 				<configuration>
+					<skip>true</skip>
 					<transformationSets>
 						<transformationSet>
 							<dir>${project.build.directory}/spotbugs</dir>
