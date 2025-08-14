@@ -26,7 +26,7 @@ under the License.
 	<parent>
 		<groupId>com.xenoamess.necrodialysis.pulsar-flink</groupId>
 		<artifactId>pulsar-flink-parent</artifactId>
-		<version>1.18.1-beta1</version>
+		<version>1.18.1-beta2</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
