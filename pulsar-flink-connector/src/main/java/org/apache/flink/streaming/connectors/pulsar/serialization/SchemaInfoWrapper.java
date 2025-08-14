@@ -49,7 +49,7 @@ public class SchemaInfoWrapper implements Serializable {
 
     public SchemaInfo getSchemaInfo() {
         if (schemaInfo == null) {
-            schemaInfo = new SchemaInfoImpl(name, schema, type, properties);
+            schemaInfo = new SchemaInfoImpl(name, schema, type, 0, properties);
         }
         return schemaInfo;
     }
