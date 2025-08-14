@@ -36,7 +36,7 @@ import org.apache.flink.util.FlinkException;
 import org.apache.flink.util.InstantiationUtil;
 import org.apache.flink.util.Preconditions;
 
-import org.apache.flink.shaded.guava30.com.google.common.base.CaseFormat;
+import org.apache.flink.shaded.guava31.com.google.common.base.CaseFormat;
 
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,6 @@ import static org.apache.flink.streaming.connectors.pulsar.table.PulsarSinkSeman
 import static org.apache.flink.streaming.connectors.pulsar.table.PulsarSinkSemantic.EXACTLY_ONCE;
 import static org.apache.flink.streaming.connectors.pulsar.table.PulsarSinkSemantic.NONE;
 import static org.apache.flink.table.factories.FactoryUtil.FORMAT;
-import static org.apache.flink.table.types.logical.utils.LogicalTypeChecks.hasRoot;
 
 /** Option utils for pulsar table source sink. */
 @Slf4j
@@ -637,7 +636,7 @@ public class PulsarTableOptions {
             ReadableConfig options, DataType physicalDataType) {
         final LogicalType physicalType = physicalDataType.getLogicalType();
         Preconditions.checkArgument(
-                hasRoot(physicalType, LogicalTypeRoot.ROW), "Row data type expected.");
+                physicalType.is(LogicalTypeRoot.ROW), "Row data type expected.");
         final Optional<String> optionalKeyFormat = options.getOptional(KEY_FORMAT);
         final Optional<List<String>> optionalKeyFields = options.getOptional(KEY_FIELDS);
 
@@ -703,7 +702,7 @@ public class PulsarTableOptions {
             ReadableConfig options, DataType physicalDataType) {
         final LogicalType physicalType = physicalDataType.getLogicalType();
         Preconditions.checkArgument(
-                hasRoot(physicalType, LogicalTypeRoot.ROW), "Row data type expected.");
+                physicalType.is(LogicalTypeRoot.ROW), "Row data type expected.");
         final int physicalFieldCount = LogicalTypeChecks.getFieldCount(physicalType);
         final IntStream physicalFields = IntStream.range(0, physicalFieldCount);
 

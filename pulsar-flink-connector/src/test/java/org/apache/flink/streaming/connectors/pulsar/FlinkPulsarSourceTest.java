@@ -59,8 +59,8 @@ import org.apache.flink.util.TestLogger;
 import org.apache.flink.util.function.SupplierWithException;
 import org.apache.flink.util.function.ThrowingRunnable;
 
-import org.apache.flink.shaded.guava30.com.google.common.collect.ImmutableMap;
-import org.apache.flink.shaded.guava30.com.google.common.collect.Sets;
+import org.apache.flink.shaded.guava31.com.google.common.collect.ImmutableMap;
+import org.apache.flink.shaded.guava31.com.google.common.collect.Sets;
 
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.MessageId;

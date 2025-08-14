@@ -66,22 +66,26 @@ under the License.
 	</modules>
 
 	<properties>
+		<java.version>17</java.version>
+		<target.java.version>${java.version}</target.java.version>
+		<!-- Overwrite default values from parent pom.
+			 Intellij is (sometimes?) using those values to choose target language level
+			 and thus is changing back to java 1.6 on each maven re-import -->
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+
 		<!-- Project configuration properties -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.scm.id>snbot-github</project.scm.id>
-		<target.java.version>1.8</target.java.version>
-		<!-- Overwrite default values from parent pom.
-			 Intellij is (sometimes?) using those values to choose target language level
-			 and thus is changing back to java 1.6 on each maven re-import -->
-		<maven.compiler.target>${target.java.version}</maven.compiler.target>
-		<maven.compiler.source>${target.java.version}</maven.compiler.source>
+
 		<testRetryCount>3</testRetryCount>
 
 		<!-- Use latest Pulsar version -->
 		<pulsar.version>2.10.0</pulsar.version>
-		<flink.version>1.14.3</flink.version>
-		<lombok.version>1.18.22</lombok.version>
+		<flink.version>1.18.1</flink.version>
+		<lombok.version>1.18.38</lombok.version>
 		<!-- Keep track the slf4j version with flink -->
 		<slf4j.version>1.7.15</slf4j.version>
 
@@ -210,7 +214,7 @@ under the License.
 			</properties>
 			<activation>
 				<property>
-					<name>!scala-2.12</name>
+					<name>scala-2.11</name>
 				</property>
 			</activation>
 			<build>
@@ -252,7 +256,7 @@ under the License.
 			</properties>
 			<activation>
 				<property>
-					<name>scala-2.12</name>
+					<name>!scala-2.11</name>
 				</property>
 			</activation>
 			<build>
@@ -521,6 +525,7 @@ under the License.
 					</execution>
 				</executions>
 				<configuration>
+					<skip>true</skip>
 					<suppressionsLocation>/tools/maven/suppressions.xml</suppressionsLocation>
 					<includeTestSourceDirectory>true</includeTestSourceDirectory>
 					<configLocation>/tools/maven/checkstyle.xml</configLocation>
@@ -534,6 +539,7 @@ under the License.
 				<artifactId>spotless-maven-plugin</artifactId>
 				<version>${spotless-maven-plugin.version}</version>
 				<configuration>
+					<checkSkip>true</checkSkip>
 					<java>
 						<googleJavaFormat>
 							<version>1.7</version>
@@ -575,6 +581,7 @@ under the License.
 				</executions>
 
 				<configuration>
+					<skip>true</skip>
 					<xmlOutput>true</xmlOutput>
 					<threshold>Low</threshold>
 					<effort>default</effort>

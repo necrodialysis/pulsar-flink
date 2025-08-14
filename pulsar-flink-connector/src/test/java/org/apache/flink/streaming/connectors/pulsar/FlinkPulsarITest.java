@@ -79,8 +79,8 @@ import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.ExceptionUtils;
 
-import org.apache.flink.shaded.guava30.com.google.common.collect.Iterables;
-import org.apache.flink.shaded.guava30.com.google.common.collect.Sets;
+import org.apache.flink.shaded.guava31.com.google.common.collect.Iterables;
+import org.apache.flink.shaded.guava31.com.google.common.collect.Sets;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;

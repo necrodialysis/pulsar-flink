@@ -26,7 +26,7 @@ import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext;
 import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.streaming.connectors.pulsar.serialization.PulsarDeserializationSchema;
-import org.apache.flink.streaming.runtime.tasks.ProcessingTimeCallback;
+import org.apache.flink.api.common.operators.ProcessingTimeService.ProcessingTimeCallback;
 import org.apache.flink.streaming.runtime.tasks.ProcessingTimeService;
 import org.apache.flink.util.SerializedValue;
 
@@ -616,7 +616,7 @@ public class PulsarFetcher<T> {
 
                         // the format of the ID does not matter, as long as it is unique
                         final String partitionId = state.getTopicRange().toString();
-                        watermarkOutputMultiplexer.registerNewOutput(partitionId);
+                        watermarkOutputMultiplexer.registerNewOutput(partitionId, watermark -> {});
                         WatermarkOutput immediateOutput =
                                 watermarkOutputMultiplexer.getImmediateOutput(partitionId);
                         WatermarkOutput deferredOutput =

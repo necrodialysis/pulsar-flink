@@ -37,8 +37,8 @@ import org.apache.flink.table.client.gateway.context.DefaultContext;
 import org.apache.flink.table.client.gateway.context.ExecutionContext;
 import org.apache.flink.table.client.gateway.context.SessionContext;
 
-import org.apache.flink.shaded.guava30.com.google.common.collect.Iterables;
-import org.apache.flink.shaded.guava30.com.google.common.collect.Sets;
+import org.apache.flink.shaded.guava31.com.google.common.collect.Iterables;
+import org.apache.flink.shaded.guava31.com.google.common.collect.Sets;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.pulsar.client.admin.PulsarAdmin;
